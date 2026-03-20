@@ -1,0 +1,27 @@
+version: '3.8'
+#versão atual 
+services:
+  # O "Roteador" da nossa aplicação
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+
+  # Nossa Aplicação (Microsserviço)
+  app:
+    image: node:14-alpine
+    working_dir: /usr/src/app
+    command: npm start
+    environment:
+      - DB_HOST=db
+    volumes:
+      - ./app:/usr/src/app
+
+  # O Banco de Dados
+  db:
+    image: redis:alpine
+    restart: always
